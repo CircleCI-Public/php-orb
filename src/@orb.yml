@@ -1,0 +1,8 @@
+version: 2.1
+
+description: >
+  Simplify common tasks for building and testing PHP projects.
+
+## Requirements ##
+## - Bash
+## - cURL

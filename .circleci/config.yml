@@ -1,0 +1,23 @@
+version: 2.1
+
+orbs:
+  php: sandbox/php@dev:0.1
+
+jobs:
+  php_install:
+    docker:
+      - image: circleci/node
+    steps:
+      - php/install
+      - php/install-composer
+      - run:
+          command: composer
+      - run:
+          command: echo "test" > composer.lock
+      - php/load-cache
+      - php/save-cache
+workflows:
+  version: 2
+  test_all_steps:
+    jobs:
+      - php_install

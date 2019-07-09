@@ -1,0 +1,7 @@
+description: Install PHP7.0
+steps:
+  - run:
+      command: |
+        sudo apt-get update -y
+        sudo apt-get install php7.0
+      name: Install PHP 7.0

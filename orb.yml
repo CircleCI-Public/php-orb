@@ -1,0 +1,47 @@
+commands:
+  install:
+    description: Install PHP7.0
+    steps:
+    - run:
+        command: |
+          sudo apt-get update -y
+          sudo apt-get install php7.0
+        name: Install PHP 7.0
+  install-composer:
+    description: Install composer
+    steps:
+    - run:
+        command: |
+          curl -sS https://getcomposer.org/installer -o composer-setup.php
+        name: Download composer
+    - run:
+        command: |
+          sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+        name: Install composer
+  load-cache:
+    description: Load cached vendor files.
+    parameters:
+      key:
+        default: composer-v1
+        description: The cache key to use. The key is immutable.
+        type: string
+    steps:
+    - restore_cache:
+        keys:
+        - << parameters.key >>-{{ checksum "composer.lock"  }}
+  save-cache:
+    description: Save vendor files to cache.
+    parameters:
+      key:
+        default: composer-v1
+        description: The cache key to use. The key is immutable.
+        type: string
+    steps:
+    - save_cache:
+        key: << parameters.key >>-{{ checksum "composer.lock"  }}
+        paths:
+        - vendor
+description: |
+  Simplify common tasks for building and testing PHP projects.
+version: 2.1
+
