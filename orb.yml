@@ -1,47 +1,77 @@
-commands:
-  install:
-    description: Install PHP7.0
-    steps:
-    - run:
-        command: |
-          sudo apt-get update -y
-          sudo apt-get install php7.0
-        name: Install PHP 7.0
-  install-composer:
-    description: Install composer
-    steps:
-    - run:
-        command: |
-          curl -sS https://getcomposer.org/installer -o composer-setup.php
-        name: Download composer
-    - run:
-        command: |
-          sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-        name: Install composer
-  load-cache:
-    description: Load cached vendor files.
-    parameters:
-      key:
-        default: composer-v1
-        description: The cache key to use. The key is immutable.
-        type: string
-    steps:
-    - restore_cache:
-        keys:
-        - << parameters.key >>-{{ checksum "composer.lock"  }}
-  save-cache:
-    description: Save vendor files to cache.
-    parameters:
-      key:
-        default: composer-v1
-        description: The cache key to use. The key is immutable.
-        type: string
-    steps:
-    - save_cache:
-        key: << parameters.key >>-{{ checksum "composer.lock"  }}
-        paths:
-        - vendor
-description: |
-  Simplify common tasks for building and testing PHP projects.
 version: 2.1
 
+description: "Common CircleCI tasks for the PHP programming language."
+
+orbs:
+  detect: circleci/os-detect@0.1
+
+executors:
+  default:
+    description: "The official CircleCI PHP Docker image."
+    parameters:
+      tag:
+        description: "The `circleci/php` Docker image version tag."
+        type: string
+        default: "latest"
+    docker:
+      - image: circleci/php:<< parameters.tag >>
+
+commands:
+  install:
+    description: "Install PHP into your Ubuntu or Debian based image."
+    parameters:
+      version:
+        description: "The PHP version."
+        type: string
+        default: "7.3"
+    steps:
+      - detect/init
+      - run:
+          name: "Install PHP"
+          command: |
+            sudo apt update && sudo apt install -y software-properties-common
+
+            if [[ $OSD_ID == "ubuntu" ]]; then
+              sudo add-apt-repository -yu ppa:ondrej/php
+            elif [[ $OSD_ID == "debian" ]]; then
+              curl -fsSL https://packages.sury.org/php/apt.gpg | sudo apt-key add -
+              sudo add-apt-repository "deb https://packages.sury.org/php/ $(lsb_release -cs) main"
+            else
+              echo "OS not supported."
+            fi
+
+            sudo apt-get update
+            sudo apt-get install -y php<< parameters.version >>
+  install-composer:
+    description: "Install Composer"
+    steps:
+      - run:
+          name: "Install Composer"
+          command: |
+            curl -sS https://getcomposer.org/installer -o composer-setup.php
+            sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  load-cache:
+    description: "Load cached Composer deps."
+    parameters:
+      key:
+        description: "The cache key to use. The key is immutable."
+        type: string
+        default: "composer"
+    steps:
+      - restore_cache:
+          keys:
+            - << parameters.key >>-{{ checksum "composer.lock"  }}
+  save-cache:
+    description: "Save Composer deps to cache."
+    parameters:
+      key:
+        description: "The cache key to use. The key is immutable."
+        type: string
+        default: "composer"
+    steps:
+      - save_cache:
+          key: << parameters.key >>-{{ checksum "composer.lock"  }}
+          paths:
+            - "vendor"
+
+#examples:
