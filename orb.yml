@@ -10,11 +10,11 @@ executors:
     description: "The official CircleCI PHP Docker image."
     parameters:
       tag:
-        description: "The `circleci/php` Docker image version tag."
+        description: "The `cimg/php` Docker image version tag."
         type: string
         default: "latest"
     docker:
-      - image: circleci/php:<< parameters.tag >>
+      - image: cimg/php:<< parameters.tag >>
 
 commands:
   install:
