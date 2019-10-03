@@ -1,0 +1,7 @@
+description: "Install Composer"
+    steps:
+      - run:
+          name: "Install Composer"
+          command: |
+            curl -sS https://getcomposer.org/installer -o composer-setup.php
+            sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer

@@ -1,0 +1,6 @@
+version: 2.1
+
+description: "Common CircleCI tasks for the PHP programming language."
+
+orbs:
+  detect: circleci/os-detect@0.1

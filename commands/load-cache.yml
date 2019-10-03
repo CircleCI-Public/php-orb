@@ -1,0 +1,10 @@
+description: "Load cached Composer deps."
+    parameters:
+      key:
+        description: "The cache key to use. The key is immutable."
+        type: string
+        default: "composer"
+    steps:
+      - restore_cache:
+          keys:
+            - << parameters.key >>-{{ checksum "composer.lock"  }}
