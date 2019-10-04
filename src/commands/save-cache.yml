@@ -1,11 +1,11 @@
 description: "Save Composer deps to cache."
-    parameters:
-      key:
-        description: "The cache key to use. The key is immutable."
-        type: string
-        default: "composer"
-    steps:
-      - save_cache:
-          key: << parameters.key >>-{{ checksum "composer.lock"  }}
-          paths:
-            - "vendor"
+parameters:
+  key:
+    description: "The cache key to use. The key is immutable."
+    type: string
+    default: "composer"
+steps:
+  - save_cache:
+      key: << parameters.key >>-{{ checksum "composer.lock"  }}
+      paths:
+        - "vendor"
