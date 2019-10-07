@@ -75,4 +75,37 @@ commands:
           paths:
             - "vendor"
 
-#examples:
+examples:
+  simple_install:
+    version: 2.1
+      orbs:
+        php: circleci/php@x.y
+
+      jobs:
+        install:
+          steps:
+            - php/install:
+                version: 7.3
+      workflows:
+        install:
+          jobs:
+            - install
+  install_and_composer:
+    version: 2.1
+    orbs:
+      php: circleci/php@x.y
+
+    jobs:
+      install-and-composer:
+        steps:
+          - php/install:
+              version: 7.3
+          - php/install-composer
+          - php/load-cache:
+              key: $COMPOSER_KEY
+          - php/save-cache:
+              key: $COMPOSER_KEY
+    workflows:
+      install:
+        jobs:
+          - install-and-composer
