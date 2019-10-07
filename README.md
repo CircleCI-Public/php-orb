@@ -21,6 +21,7 @@ orbs:
 
 jobs:
   install:
+    description: "Install php 7.3"
     steps:
       - php/install:
           version: 7.3
@@ -39,12 +40,14 @@ orbs:
 
 jobs:
   install-and-composer:
+    description: "Install php 7.3, install and run composer, save deps to cache"
     steps:
       - php/install:
           version: 7.3
       - php/install-composer
       - php/load-cache:
           key: $COMPOSER_KEY
+      - composer
       - php/save-cache:
           key: $COMPOSER_KEY
 workflows:

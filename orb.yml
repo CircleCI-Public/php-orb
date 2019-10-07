@@ -77,12 +77,14 @@ commands:
 
 examples:
   simple_install:
+    description: "Basic PHP installation given a version"
     version: 2.1
       orbs:
         php: circleci/php@x.y
 
       jobs:
         install:
+          description: "Install php 7.3"
           steps:
             - php/install:
                 version: 7.3
@@ -91,18 +93,21 @@ examples:
           jobs:
             - install
   install_and_composer:
+    description: "Install PHP, composer and load saved dependency cache"
     version: 2.1
     orbs:
       php: circleci/php@x.y
 
     jobs:
       install-and-composer:
+        description: "Install php 7.3, install and run composer, save deps to cache"
         steps:
           - php/install:
               version: 7.3
           - php/install-composer
           - php/load-cache:
               key: $COMPOSER_KEY
+          - composer
           - php/save-cache:
               key: $COMPOSER_KEY
     workflows:
