@@ -11,6 +11,44 @@ This orb allows you to do common PHP related tasks on CircleCI such as install P
 
 Example use as well as a list of available executors, commands, and jobs are available on this orb's [registry page][reg-page].
 
+### Complete
+```yaml
+version: 2.1
+
+orbs:
+  php: circleci/php@y.x.z
+jobs:
+  #create a new job
+  install-and-cache:
+    description: "Install PHP, install composer, load cache and save cache"
+    executor: <<parameters.executor>>
+    parameters:
+      version:
+        description: "The PHP version."
+        type: string
+        default: "7.3"
+      key:
+        description: "The cache key to use. The key is immutable."
+        type: string
+        default: "composer"
+    steps:
+      - php/install:
+          version: <<parameters.version>>
+      - php/install-composer
+      - php/load-cache:
+          key: <<parameters.key>>
+      - php/save-cache:
+          key: <<parameters.key>>
+
+workflows:
+  simple_install_and_cache:
+    jobs:
+      - install-and-cache:
+          #The PHP version, default to "7.3"
+          version: "myPhpVersion"
+          #The cache key to use. The key is immutable. default to "composer"
+          key: "myCacheKey"
+```
 
 ## Resources
 
