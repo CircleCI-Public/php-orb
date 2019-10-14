@@ -60,7 +60,7 @@ workflows:
 We welcome [issues](https://github.com/CircleCI-Public/php-orb/issues) to and [pull requests](https://github.com/CircleCI-Public/php-orb/pulls) against this repository!
 For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
 
-### Publishing
+## Publishing
 
 New versions of this orb are published by pushing a SemVer git tag by the Community & Partner Engineering Team.
 
