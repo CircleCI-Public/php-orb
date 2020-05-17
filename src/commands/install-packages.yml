@@ -65,7 +65,7 @@ steps:
   - run:
       name: Installing Composer Packages
       working_directory: <<parameters.app-dir>>
-      command: <<parameters.  install-command>>
+      command: <<parameters.install-command>>
   - when:
       condition: << parameters.with-cache >>
       steps:
