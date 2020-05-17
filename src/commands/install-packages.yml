@@ -1,0 +1,77 @@
+description: >
+  Install your composer packages with automated caching and best practices applied.
+
+parameters:
+  app-dir:
+    type: string
+    default: ~/project
+    description: Path to the directory containing your composer.json file. Not needed if composer.json lives in the root.
+  install-command:
+    type: string
+    default: composer install --no-interaction --prefer-dist
+    description: |
+      By default, packages will be installed with "composer install --no-interaction --prefer-dist", use this to override the standard "install" command.
+  with-cache:
+    type: boolean
+    default: true
+    description: Enable automatic caching of your dependencies for increased speed.
+  cache-version:
+    type: string
+    default: v1
+    description: Change the default cache version if you need to clear the cache for any reason.
+  cache-key:
+    type: string
+    default: composer.lock
+    description: If this file is updated a new cache bucket will be created. Recommended to use composer.lock. Use composer.json when composer.lock is absent.
+  include-branch-in-cache-key:
+    type: boolean
+    default: true
+    description: >
+      If true, this cache bucket will only apply to jobs within the same branch.
+  vendor-dir:
+    type: string
+    default: vendor
+    description: Relative path to the vendor folder. Relative to "app-dir". This should be inline with "composer config vendor-dir".
+  cache-files-dir:
+    type: string
+    default: /home/circleci/.composer/cache/files
+    description: Absolute path to the file cache folder. This should be inline with "composer global config cache-files-dir --absolute".
+
+steps:
+  - when:
+      condition: << parameters.with-cache >>
+      steps:
+        - restore_cache:
+            keys:
+              - composer-deps-<<parameters.cache-version>>-<<#parameters.include-branch-in-cache-key>>{{ .Branch }}-<</parameters.include-branch-in-cache-key>>{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
+  - run:
+      name: Verify composer.json and/or composer.lock exist
+      working_directory: <<parameters.app-dir>>
+      command: |
+        if [ ! -f "composer.json" ] && [ ! -f "composer.lock" ]; then
+          echo
+          echo "---"
+          echo "Unable to find your composer.json and composer.lock files. Did you forget to set the app-dir parameter?"
+          echo "---"
+          echo
+          echo "Current directory: $(pwd)"
+          echo
+          echo
+          echo "List directory: "
+          echo
+          ls
+          exit 1
+        fi
+  - run:
+      name: Installing Composer Packages
+      working_directory: <<parameters.app-dir>>
+      command: <<parameters.  install-command>>
+  - when:
+      condition: << parameters.with-cache >>
+      steps:
+        - save_cache:
+            keys:
+              - composer-deps-<<parameters.cache-version>>-<<#parameters.include-branch-in-cache-key>>{{ .Branch }}-<</parameters.include-branch-in-cache-key>>{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
+            paths:
+              - <<parameters.app-dir>>/<<parameters.vendor-dir>>
+              - <<parameters.cache-files-dir>>
