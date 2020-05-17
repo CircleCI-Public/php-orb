@@ -1,0 +1,33 @@
+description: |
+  Simple drop-in job to test your PHP application automatically.
+
+parameters:
+  version:
+    type: string
+    description: The `cimg/php` Docker image version tag.
+  setup:
+    type: steps
+    description: Provide any optional steps you would like to run prior to installing the node dependencies. This is a good place to install global packages.
+    default: []
+  test-command:
+    type: string
+    default: test
+    description: The name of the script within your composer.json which will run your tests.
+  app-dir:
+    type: string
+    default: ~/project
+    description: Path to the directory containing your composer.json file. Not needed if composer.json lives in the root.
+
+executor:
+  name: default
+  tag: << parameters.version >>
+
+steps:
+  - checkout
+  - steps: << parameters.setup >>
+  - install-packages:
+      app-dir: <<parameters.app-dir>>
+  - run:
+      name: Run Tests
+      working_directory: <<parameters.app-dir>>
+      command: composer <<parameters.test-command>>
