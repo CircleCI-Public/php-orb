@@ -3,7 +3,7 @@ parameters:
   version:
     description: "The PHP version."
     type: string
-    default: "7.3"
+    default: "7.4"
 steps:
   - detect/init
   - run:
