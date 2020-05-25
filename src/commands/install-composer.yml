@@ -1,7 +1,18 @@
-description: "Install Composer"
+description: Install Composer
+
+parameters:
+  force:
+    description: Whether to force the installation.
+    type: boolean
+    default: false
+  install-dir:
+    description: Path to target installation directory.
+    type: string
+    default: /usr/local/bin
+
 steps:
   - run:
-      name: "Install Composer"
+      name: Install Composer
       command: |
         curl -sS https://getcomposer.org/installer -o composer-setup.php
-        sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+        sudo php composer-setup.php <<# parameters.force >> --force <</ parameters.force >> --install-dir=<<parameters.install-dir>> --filename=composer
