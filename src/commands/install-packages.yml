@@ -6,11 +6,11 @@ parameters:
     type: string
     default: ~/project
     description: Path to the directory containing your composer.json file. Not needed if composer.json lives in the root.
-  install-command:
+  install-flags:
     type: string
-    default: composer install --no-interaction --prefer-dist
+    default: --no-interaction --prefer-dist
     description: |
-      By default, packages will be installed with "composer install --no-interaction --prefer-dist", use this to override the standard "install" command.
+      By default, packages will be installed with "composer install --no-interaction --prefer-dist", use this to override the standard install flags.
   with-cache:
     type: boolean
     default: true
@@ -65,7 +65,7 @@ steps:
   - run:
       name: Installing Composer Packages
       working_directory: <<parameters.app-dir>>
-      command: <<parameters.install-command>>
+      command: composer install <<parameters.install-flags>>
   - when:
       condition: << parameters.with-cache >>
       steps:
