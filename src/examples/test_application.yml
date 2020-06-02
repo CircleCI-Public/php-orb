@@ -1,0 +1,12 @@
+description: >
+  Run composer test on your application in a more opinionated manner.
+
+usage:
+  version: 2.1
+  orbs:
+    php: circleci/php@x.y
+
+  workflows:
+    test:
+      jobs:
+        - php/test

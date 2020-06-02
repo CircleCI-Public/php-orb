@@ -65,8 +65,7 @@ steps:
       condition: << parameters.with-cache >>
       steps:
         - save_cache:
-            keys:
-              - composer-deps-<<parameters.cache-version>>-{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
+            key: composer-deps-<<parameters.cache-version>>-{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
             paths:
               - <<parameters.app-dir>>/<<parameters.vendor-dir>>
               - <<parameters.cache-files-dir>>

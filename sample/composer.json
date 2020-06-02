@@ -1,0 +1,19 @@
+{
+    "name":"circleci-public/sample-composer-file",
+    "description":"Sample composer file.",
+    "type":"library",
+    "license":"MPL-2.0",
+    "authors":[
+      {
+        "name":"CircleCI",
+        "email":"community-partner@circleci.com"
+      }
+    ],
+    "minimum-stability":"dev",
+    "require":{
+      "monolog/monolog": "2.1.0"
+    },
+    "scripts":{
+      "test":"echo 'tested'"
+    }
+  }

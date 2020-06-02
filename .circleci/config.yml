@@ -1,37 +1,118 @@
 version: 2.1
 
 orbs:
-  cli: circleci/circleci-cli@0.1.4
+  php: circleci/php@<<pipeline.parameters.dev-orb-version>>
+  orb-tools: circleci/orb-tools@9.0
 
-workflows:
-  main:
-    jobs:
-      - test:
-          filters:
-            tags:
-              # Simplified SemVer regex
-              only: /^\d+\.\d+\.\d+$/
-      - publish:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              # Simplified SemVer regex
-              only: /^\d+\.\d+\.\d+$/
-          context: orb-publishing
+parameters:
+  run-integration-tests:
+    type: boolean
+    default: false
+  dev-orb-version:
+    type: string
+    default: "dev:alpha"
 
 jobs:
-  test:
-    executor: cli/default
+  integration_install-php:
+    docker:
+      - image: cimg/base:edge
+    steps:
+      - php/install-php
+
+  integration_install-composer:
+    executor: php/default
+    steps:
+      - php/install-composer
+
+  integration_install-packages:
+    executor: php/default
     steps:
       - checkout
-      - run:
-          name: "Validate Orb config"
-          command: circleci orb validate orb.yml
-  publish:
-    executor: cli/default
-    steps:
-      - checkout
-      - run:
-          name: "Publish orb via the CircleCI CLI"
-          command: circleci orb publish orb.yml circleci/php@${CIRCLE_TAG}
+      - php/install-packages:
+          app-dir: "~/project/sample"
+          cache-key: "composer.json"
+
+# yaml anchor filters
+prod-deploy_requires: &prod-deploy_requires
+  [
+    integration_install-php
+    integration_install-composer
+    integration_install-packages
+  ]
+
+integration-dev_filters: &integration-dev_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /integration-.*/
+
+integration-master_filters: &integration-master_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /master-.*/
+
+workflows:
+  # This `lint-pack_validate_publish-dev` workflow will run on any commit.
+  lint_pack-validate_publish-dev:
+    unless: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - orb-tools/lint
+      # pack your orb YAML files to a single orb.yml
+      # validate the orb.yml file to ensure it is well-formed
+      - orb-tools/pack:
+          requires:
+            - orb-tools/lint
+
+      # release dev version of orb, for testing & possible publishing.
+      # orb will be published as dev:alpha and dev:${CIRCLE_SHA1:0:7}.
+      # requires a CircleCI API token to be stored as CIRCLE_TOKEN (default)
+      # https://circleci.com/docs/2.0/managing-api-tokens
+      # store CIRCLE_TOKEN as a project env var or Contexts resource
+      # if using Contexts, add your context below
+      - orb-tools/publish-dev:
+          orb-name: circleci/php
+          requires:
+            - orb-tools/pack
+
+      # trigger an integration workflow to test the
+      # dev:${CIRCLE_SHA1:0:7} version of your orb
+      - orb-tools/trigger-integration-tests-workflow:
+          name: trigger-integration-dev
+          requires:
+            - orb-tools/publish-dev
+
+  # This `integration-tests_prod-release` workflow will only run
+  # when the run-integration-tests pipeline parameter is set to true.
+  # It is meant to be triggered by the "trigger-integration-tests-workflow"
+  # job, and run tests on <your orb>@dev:${CIRCLE_SHA1:0:7}.
+  integration-tests_prod-release:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      # your integration test jobs go here: essentially, run all your orb's
+      # jobs and commands to ensure they behave as expected. or, run other
+      # integration tests of your choosing
+
+      - integration_install-php
+      - integration_install-composer
+      - integration_install-packages
+
+      # publish a semver version of the orb. relies on
+      # the commit subject containing the text "[semver:patch|minor|major|skip]"
+      # as that will determine whether a patch, minor or major
+      # version will be published or if publishing should
+      # be skipped.
+      # e.g. [semver:patch] will cause a patch version to be published.
+      - orb-tools/dev-promote-prod-from-commit-subject:
+          orb-name: circleci/php
+
+          add-pr-comment: false
+          fail-if-semver-not-indicated: false
+          publish-version-tag: false
+          requires:
+            - integration_install-php
+            - integration_install-composer
+            - integration_install-packages
+          filters:
+            branches:
+              only: master
