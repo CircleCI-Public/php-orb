@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   php: circleci/php@<<pipeline.parameters.dev-orb-version>>
-  orb-tools: circleci/orb-tools@9.0
+  orb-tools: circleci/orb-tools@9.1
 
 parameters:
   run-integration-tests:
@@ -105,10 +105,10 @@ workflows:
       # e.g. [semver:patch] will cause a patch version to be published.
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: circleci/php
-
-          add-pr-comment: false
-          fail-if-semver-not-indicated: false
-          publish-version-tag: false
+          context: orb-publishing
+          add-pr-comment: true
+          fail-if-semver-not-indicated: true
+          publish-version-tag: true
           requires:
             - integration_install-php
             - integration_install-composer
