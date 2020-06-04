@@ -71,6 +71,7 @@ workflows:
       # store CIRCLE_TOKEN as a project env var or Contexts resource
       # if using Contexts, add your context below
       - orb-tools/publish-dev:
+          context: orb-publishing
           orb-name: circleci/php
           requires:
             - orb-tools/pack
@@ -79,6 +80,7 @@ workflows:
       # dev:${CIRCLE_SHA1:0:7} version of your orb
       - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-dev
+          context: orb-publishing
           requires:
             - orb-tools/publish-dev
 
@@ -105,6 +107,7 @@ workflows:
       # e.g. [semver:patch] will cause a patch version to be published.
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: circleci/php
+          ssh-fingerprints: 78:6e:5f:76:b3:ce:b5:07:f7:d9:0e:6a:49:5a:d3:dd
           context: orb-publishing
           add-pr-comment: true
           fail-if-semver-not-indicated: true
