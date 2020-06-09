@@ -1,0 +1,20 @@
+description: >
+  Example showing how to install a specific PHP version (7.3). 7.4 is installed
+  by default.
+
+usage:
+  version: 2.1
+  orbs:
+    php: circleci/php@x.y
+  jobs:
+    install_php:
+      docker:
+       - image: cimg/base:edge
+      steps:
+        - checkout
+        - php/install-php:
+            version: "7.3"
+  workflows:
+    install:
+      jobs:
+        - install_php

@@ -1,0 +1,18 @@
+description: >
+  Example showing how to install Composer then installing packages for a project.
+
+usage:
+  version: 2.1
+  orbs:
+    php: circleci/php@x.y
+  jobs:
+    install_composer_packages:
+      executor: php/default
+      steps:
+        - checkout
+        - php/install-composer
+        - php/install-packages
+  workflows:
+    install:
+      jobs:
+        - install_composer_packages
