@@ -12,4 +12,4 @@ steps:
       name: Install Composer
       command: |
         curl -sS https://getcomposer.org/installer -o composer-setup.php
-        sudo php composer-setup.php --filename=composer <<parameters.install-dir>>
+        sudo php composer-setup.php --filename=composer --install-dir=<<parameters.install-dir>>
