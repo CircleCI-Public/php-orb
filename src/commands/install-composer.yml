@@ -6,10 +6,15 @@ parameters:
     default:  /usr/local/bin
     description: |
       By default, composer will be installed at "/usr/local/bin/composer", use this to override the install directory.
+  install-version:
+    type: string
+    default: ''
+    description: |
+      By default, composer will install the latest composer version, use this to override the installed version.
 
 steps:
   - run:
       name: Install Composer
       command: |
         curl -sS https://getcomposer.org/installer -o composer-setup.php
-        sudo php composer-setup.php --filename=composer --install-dir=<<parameters.install-dir>>
+        sudo php composer-setup.php --filename=composer --install-dir=<<parameters.install-dir>> <<#parameters.install-version>>--version=<<parameters.install-version>><</parameters.install-version>>
