@@ -14,7 +14,7 @@ parameters:
 
 steps:
   - run:
-      name: Download Composer
+      name: Install Composer
       command: |
         curl -sS https://getcomposer.org/installer -o composer-setup.php
         sudo php composer-setup.php --filename=composer --install-dir=<<parameters.install-dir>> <<#parameters.install-version>>--version=<<parameters.install-version>><</parameters.install-version>>
