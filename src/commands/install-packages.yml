@@ -42,7 +42,7 @@ steps:
   - run:
       name: Install Composer Packages
       working_directory: <<parameters.app-dir>>
-      environment: 
+      environment:
         ORB_EVAL_INSTALL_FLAGS: <<parameters.install-flags>>
       command: <<include(scripts/install-packages.sh)>>
   - when:
