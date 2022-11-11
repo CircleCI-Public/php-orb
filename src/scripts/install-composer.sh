@@ -8,5 +8,3 @@ if [ -n "${ORB_VAL_INSTALL_VERSION}" ]; then
 fi
 
 sudo php composer-setup.php --filename=composer --install-dir="${ORB_VAL_INSTALL_DIR}" "$@"
-
-
