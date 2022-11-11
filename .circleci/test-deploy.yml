@@ -1,0 +1,50 @@
+version: 2.1
+orbs:
+  php: circleci/php@dev:<<pipeline.git.revision>>
+  orb-tools: circleci/orb-tools@11.5
+filters: &filters
+  tags:
+    only: /.*/
+jobs:
+  integration_install-php:
+    docker:
+      - image: cimg/base:edge
+    steps:
+      - php/install-php
+  integration_install-composer:
+    executor: php/default
+    steps:
+      - php/install-composer
+  integration_install-packages:
+    executor: php/default
+    steps:
+      - checkout
+      - php/install-packages:
+          app-dir: "~/project/sample"
+          cache-key: "composer.json"
+workflows:
+  test-deploy:
+    jobs:
+      - integration_install-php:
+          filters: *filters
+      - integration_install-composer:
+          filters: *filters
+      - integration_install-packages:
+          filters: *filters
+      - orb-tools/pack:
+          filters: *filters
+      - orb-tools/publish:
+          orb-name: circleci/php
+          vcs-type: << pipeline.project.type >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - integration_install-php
+            - integration_install-composer
+            - integration_install-packages
+          context: orb-publisher
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
