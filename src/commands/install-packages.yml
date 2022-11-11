@@ -40,27 +40,11 @@ steps:
             keys:
               - composer-deps-<<parameters.cache-version>>-{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
   - run:
-      name: Verify composer.json and/or composer.lock exist
+      name: Install Composer Packages
       working_directory: <<parameters.app-dir>>
-      command: |
-        if [ ! -f "composer.json" ] && [ ! -f "composer.lock" ]; then
-          echo
-          echo "---"
-          echo "Unable to find your composer.json and composer.lock files. Did you forget to set the app-dir parameter?"
-          echo "---"
-          echo
-          echo "Current directory: $(pwd)"
-          echo
-          echo
-          echo "List directory: "
-          echo
-          ls
-          exit 1
-        fi
-  - run:
-      name: Installing Composer Packages
-      working_directory: <<parameters.app-dir>>
-      command: composer install <<parameters.install-flags>>
+      environment:
+        ORB_EVAL_INSTALL_FLAGS: <<parameters.install-flags>>
+      command: <<include(scripts/install-packages.sh)>>
   - when:
       condition: << parameters.with-cache >>
       steps:
