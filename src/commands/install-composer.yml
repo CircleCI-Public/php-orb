@@ -15,6 +15,9 @@ parameters:
 steps:
   - run:
       name: Install Composer
-      command: |
+      environment:
+        ORB_EVAL_INSTALL_DIR: << parameters.install-dir >>
+        ORB_VAL_INSTALL_VERSION: << parameters.install-version >>
+      command: << include(scripts/install-composer.sh) >>
         curl -sS https://getcomposer.org/installer -o composer-setup.php
         sudo php composer-setup.php --filename=composer --install-dir=<<parameters.install-dir>> <<#parameters.install-version>>--version=<<parameters.install-version>><</parameters.install-version>>
