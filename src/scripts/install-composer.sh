@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ORB_VAL_INSTALL_DIR=$(eval echo "${ORB_VAL_INSTALL_DIR}")
+ORB_VAL_INSTALL_DIR=$(eval "echo ${ORB_VAL_INSTALL_DIR}")
 
 curl -sS https://getcomposer.org/installer -o composer-setup.php
 if [ -n "${ORB_VAL_INSTALL_VERSION}" ]; then
