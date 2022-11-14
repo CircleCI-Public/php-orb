@@ -10,5 +10,5 @@ steps:
       name: "Install PHP"
       environment:
         ORB_VAL_VERSION: <<parameters.version>>
-      command: << include(scripts/install-php.sh)
+      command: << include(scripts/install-php.sh) >>
 
