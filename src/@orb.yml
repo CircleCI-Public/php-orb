@@ -1,5 +1,5 @@
 description: |
-  Common CircleCI tasks for the PHP programming language.
+  Support for installing the PHP programming language, composer, and packages.
 display:
   source_url: https://github.com/circleci-public/php-orb
 orbs:
