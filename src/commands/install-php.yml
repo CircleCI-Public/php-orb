@@ -4,11 +4,16 @@ parameters:
     description: "The PHP version."
     type: string
     default: "7.4"
+  extensions:
+    description: "Comma separated list of PHP extensions to install."
+    type: string
+    default: ""
 steps:
   - detect/init
   - run:
       name: "Install PHP"
       environment:
         ORB_VAL_VERSION: <<parameters.version>>
+        ORB_VAL_EXTENSIONS: <<parameters.extensions>>
       command: << include(scripts/install-php.sh) >>
 

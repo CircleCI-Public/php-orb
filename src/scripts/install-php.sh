@@ -11,3 +11,7 @@ else
 fi
 sudo apt-get update
 sudo apt-get install -y php"${ORB_VAL_VERSION}"
+sudo systemctl stop apache2
+
+EXTENSIONS="${ORB_VAL_EXTENSIONS//,/ }"
+sudo apt-get install -y "$EXTENSIONS"
