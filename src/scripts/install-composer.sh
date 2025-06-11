@@ -18,5 +18,5 @@ fi
 
 $SUDO php composer-setup.php --quiet --filename="${FILENAME}" --install-dir="${INSTALL_DIR}" "$@"
 RESULT=$?
-$USOD rm composer-setup.php
+$SUDO rm composer-setup.php
 exit $RESULT
