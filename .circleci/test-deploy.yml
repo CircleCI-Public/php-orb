@@ -12,6 +12,7 @@ jobs:
     steps:
       - php/install-php:
           extensions: "php7.4-bz2,php7.4-pgsql"
+
   integration_install-composer:
     executor: php/default
     steps:
