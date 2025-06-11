@@ -12,6 +12,6 @@ fi
 sudo apt-get update
 sudo apt-get install -y php"${ORB_VAL_VERSION}"
 
-EXTENSIONS="${ORB_VAL_EXTENSIONS//,/ }"
-sudo apt-get install -y "$EXTENSIONS"
+IFS=',' read -ra EXTENSIONS <<< "$ORB_VAL_EXTENSIONS"
+sudo apt-get install -y "${EXTENSIONS[@]}"
 sudo service apache2 stop
