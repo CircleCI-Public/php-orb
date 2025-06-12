@@ -1,12 +1,12 @@
 description: Install Composer
 
 parameters:
-  install-dir:
+  install_dir:
     type: string
     default:  /usr/local/bin
     description: |
       By default, composer will be installed at "/usr/local/bin/composer", use this to override the install directory.
-  install-version:
+  install_version:
     type: string
     default: ''
     description: |
@@ -19,7 +19,7 @@ steps:
   - run:
       name: Install Composer
       environment:
-        ORB_EVAL_INSTALL_DIR: << parameters.install-dir >>
-        ORB_VAL_INSTALL_VERSION: << parameters.install-version >>
+        ORB_EVAL_INSTALL_DIR: << parameters.install_dir >>
+        ORB_VAL_INSTALL_VERSION: << parameters.install_version >>
         ORB_VAL_FILENAME: <<parameters.filename>>
-      command: << include(scripts/install-composer.sh) >>
+      command: << include(scripts/install_composer.sh) >>

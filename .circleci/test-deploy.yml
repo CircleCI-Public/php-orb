@@ -1,49 +1,48 @@
 version: 2.1
 orbs:
-  php: circleci/php@dev:<<pipeline.git.revision>>
-  orb-tools: circleci/orb-tools@11.5
+  orb-tools: circleci/orb-tools@12.3.1
+  php: {}
 filters: &filters
   tags:
     only: /.*/
 jobs:
-  integration_install-php:
+  integration_install_php:
     docker:
       - image: cimg/base:edge
     steps:
-      - php/install-php:
+      - php/install_php:
           extensions: "php7.4-bz2,php7.4-pgsql"
-
-  integration_install-composer:
+  integration_install_composer:
     executor: php/default
     steps:
-      - php/install-composer
-  integration_install-packages:
+      - php/install_composer
+  integration_install_packages:
     executor: php/default
     steps:
       - checkout
-      - php/install-packages:
-          app-dir: "~/project/sample"
-          cache-key: "composer.json"
+      - php/install_packages:
+          app_dir: "~/project/sample"
+          cache_key: "composer.json"
 workflows:
   test-deploy:
     jobs:
-      - integration_install-php:
+      - integration_install_php:
           filters: *filters
-      - integration_install-composer:
+      - integration_install_composer:
           filters: *filters
-      - integration_install-packages:
+      - integration_install_packages:
           filters: *filters
       - orb-tools/pack:
           filters: *filters
       - orb-tools/publish:
-          orb-name: circleci/php
-          vcs-type: << pipeline.project.type >>
-          pub-type: production
+          orb_name: circleci/php
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
           requires:
             - orb-tools/pack
-            - integration_install-php
-            - integration_install-composer
-            - integration_install-packages
+            - integration_install_php
+            - integration_install_composer
+            - integration_install_packages
           context: orb-publisher
           filters:
             branches:

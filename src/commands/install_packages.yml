@@ -2,54 +2,54 @@ description: >
   Install your composer packages with automated caching and best practices applied.
 
 parameters:
-  app-dir:
+  app_dir:
     type: string
     default: ~/project
     description: Path to the directory containing your composer.json file. Not needed if composer.json lives in the root.
-  install-flags:
+  install_flags:
     type: string
     default: --no-interaction --prefer-dist
     description: |
       By default, packages will be installed with "composer install --no-interaction --prefer-dist", use this to override the standard install flags.
-  with-cache:
+  with_cache:
     type: boolean
     default: true
     description: Enable automatic caching of your dependencies for increased speed.
-  cache-version:
+  cache_version:
     type: string
     default: v1
     description: Change the default cache version if you need to clear the cache for any reason.
-  cache-key:
+  cache_key:
     type: string
     default: composer.lock
     description: If this file is updated a new cache bucket will be created. Recommended to use composer.lock. Use composer.json when composer.lock is absent.
-  vendor-dir:
+  vendor_dir:
     type: string
     default: vendor
-    description: Relative path to the vendor folder. Relative to "app-dir". This should be inline with "composer config vendor-dir".
-  cache-files-dir:
+    description: Relative path to the vendor folder. Relative to "app_dir". This should be inline with "composer config vendor_dir".
+  cache_files_dir:
     type: string
     default: /home/circleci/.composer/cache/files
-    description: Absolute path to the file cache folder. This should be inline with "composer global config cache-files-dir --absolute".
+    description: Absolute path to the file cache folder. This should be inline with "composer global config cache_files_dir --absolute".
 
 steps:
   - when:
-      condition: << parameters.with-cache >>
+      condition: << parameters.with_cache >>
       steps:
         - restore_cache:
             keys:
-              - composer-deps-<<parameters.cache-version>>-{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
+              - composer-deps-<<parameters.cache_version>>-{{ checksum "<<parameters.app_dir>>/<<parameters.cache_key>>" }}
   - run:
       name: Install Composer Packages
-      working_directory: <<parameters.app-dir>>
+      working_directory: <<parameters.app_dir>>
       environment:
-        ORB_EVAL_INSTALL_FLAGS: <<parameters.install-flags>>
-      command: <<include(scripts/install-packages.sh)>>
+        ORB_EVAL_INSTALL_FLAGS: <<parameters.install_flags>>
+      command: <<include(scripts/install_packages.sh)>>
   - when:
-      condition: << parameters.with-cache >>
+      condition: << parameters.with_cache >>
       steps:
         - save_cache:
-            key: composer-deps-<<parameters.cache-version>>-{{ checksum "<<parameters.app-dir>>/<<parameters.cache-key>>" }}
+            key: composer-deps-<<parameters.cache_version>>-{{ checksum "<<parameters.app_dir>>/<<parameters.cache_key>>" }}
             paths:
-              - <<parameters.app-dir>>/<<parameters.vendor-dir>>
-              - <<parameters.cache-files-dir>>
+              - <<parameters.app_dir>>/<<parameters.vendor_dir>>
+              - <<parameters.cache_files_dir>>
