@@ -11,11 +11,15 @@ parameters:
     default: ''
     description: |
       By default, composer will install the latest composer version, use this to override the installed version.
-
+  filename:
+    type: string
+    description: The filename parameter to pass to composer installation.
+    default: 'composer'
 steps:
   - run:
       name: Install Composer
       environment:
         ORB_EVAL_INSTALL_DIR: << parameters.install-dir >>
         ORB_VAL_INSTALL_VERSION: << parameters.install-version >>
+        ORB_VAL_FILENAME: <<parameters.filename>>
       command: << include(scripts/install-composer.sh) >>
