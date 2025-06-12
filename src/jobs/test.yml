@@ -10,11 +10,11 @@ parameters:
     type: steps
     description: Provide any optional steps you would like to run prior to installing the composer packages. This is a good place to install global packages.
     default: []
-  test-command:
+  test_command:
     type: string
     default: test
     description: The name of the script within your composer.json which will run your tests.
-  app-dir:
+  app_dir:
     type: string
     default: ~/project
     description: Path to the directory containing your composer.json file. Not needed if composer.json lives in the root.
@@ -26,9 +26,9 @@ executor:
 steps:
   - checkout
   - steps: << parameters.setup >>
-  - install-packages:
-      app-dir: <<parameters.app-dir>>
+  - install_packages:
+      app_dir: <<parameters.app_dir>>
   - run:
       name: Run Tests
-      working_directory: <<parameters.app-dir>>
-      command: composer <<parameters.test-command>>
+      working_directory: <<parameters.app_dir>>
+      command: composer <<parameters.test_command>>

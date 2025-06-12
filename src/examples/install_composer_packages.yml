@@ -10,9 +10,9 @@ usage:
       executor: php/default
       steps:
         - checkout
-        - php/install-composer:
-            install-version: '1.10.16'
-        - php/install-packages
+        - php/install_composer:
+            install_version: '1.10.16'
+        - php/install_packages
   workflows:
     install:
       jobs:

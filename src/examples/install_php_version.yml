@@ -12,7 +12,7 @@ usage:
        - image: cimg/base:edge
       steps:
         - checkout
-        - php/install-php:
+        - php/install_php:
             version: "7.3"
   workflows:
     install:

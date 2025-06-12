@@ -15,5 +15,5 @@ steps:
       environment:
         ORB_VAL_VERSION: <<parameters.version>>
         ORB_VAL_EXTENSIONS: <<parameters.extensions>>
-      command: << include(scripts/install-php.sh) >>
+      command: << include(scripts/install_php.sh) >>
 
