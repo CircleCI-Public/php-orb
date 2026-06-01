@@ -3,6 +3,6 @@ parameters:
   tag:
     description: "The `cimg/php` Docker image version tag."
     type: string
-    default: "7.4"
+    default: "8.3"
 docker:
   - image: cimg/php:<< parameters.tag >>
